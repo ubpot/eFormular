@@ -1,0 +1,136 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+	width:21cm;
+}
+
+.ef_Link {
+	color:#336699;
+}
+
+.ef_Link   {
+	text-decoration:none;
+}
+
+
+.login {
+	vertical-align: middle;
+	margin-top: 100px;
+	margin-left: 200px;
+}
+.eF_Head {
+	display:none;
+	
+}
+
+.leftMenue {
+	display:none;
+}
+
+
+
+.wrap {
+	margin: 20px;
+	padding:5px;
+}
+
+.topMenue {
+	background-color: #FFF;
+	position: static;
+	height: auto;
+}
+
+.buttons {
+	display:none;
+}
+.ef_Folder{
+	padding:5px 5px 0px 5px;
+	
+	
+	
+}
+
+.ef_popup {
+	
+	display:none;
+	
+}
+
+.eF_FolderFormList {
+	
+	height:27px;
+	margin-top:10px;
+	
+	
+}
+
+.ef_FolderFormListItem {
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:2px;
+	padding-bottom:2px;
+	float:left;
+	background-color: #89B0D8;
+	border:medium solid #336699;
+}
+
+.ef_FolderFormListItemSelected {
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:2px;
+	padding-bottom:2px;
+	float:left;
+	background-color: #89B0D8;
+	border-top:medium solid #336699;
+	border-right:medium solid #336699;
+	border-left:medium solid #336699;
+	border-bottom:medium solid #89B0D8;
+}
+
+
+.ef_FolderFormListItem a:link  {
+	text-decoration:none;
+	color:#000;
+}
+
+.ef_FolderFormListItemSelected a:link  {
+	text-decoration:none;
+	color:#000;
+}
+
+
+.ef_FormularHead {
+	background-color: #89B0D8;
+	border:medium solid #336699;
+	
+	
+	min-height:50px;
+	
+}
+.ef_Formular {
+	border-left:medium solid #336699;
+	border-bottom:medium solid #336699;
+	border-right:medium solid #336699;
+	padding:5px;
+	display:none;
+	
+}
+
+.main {
+	background-color: #FFF;
+	
+	margin-top:10px;
+	border: 3px solid #336699;
+	padding: 10px;
+	
+}
+
+.Formlist ul{
+	list-style-type:none;
+}
+.Formlist li{
+	padding-top:10px;
+	
+}
+

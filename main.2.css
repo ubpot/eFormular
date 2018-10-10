@@ -1,0 +1,221 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+	min-width:1300px;
+}
+
+.ef_Link {
+	color:#336699;
+}
+
+.ef_Link   {
+	text-decoration:none;
+}
+
+.ef_popup {
+	height: 480px;
+	width:450px;
+	position: fixed;
+	visibility: hidden;
+	z-index: 3;
+	left: 200px;
+	top: 100px;
+	background-color: #89B0D8;
+	border: 10px groove #336699;
+	padding:10px;
+}
+
+.ef_popup_ForTmplList {
+	background-color:#FFF;
+	border:solid thin #336699;
+	height:250px;
+}
+
+.ef_popup_ForTmplList ul {
+	list-style-type:none;
+	padding:5px;
+	margin: 0px;
+}
+
+#ef_popup_SaveFormData_FolderList {
+	margin-top:15px;
+	margin-bottom:10px;
+}
+
+.ef_popup_Select select{
+	width:430px;	
+	height:340px;
+	margin-top:15px;
+	margin-bottom:10px;
+
+}
+
+
+.login {
+	vertical-align: middle;
+	margin-top: 100px;
+	margin-left: 200px;
+}
+.eF_Head {
+	text-align:center;
+	width:100%;
+	
+	padding-top: 10px;
+	padding-left: 50px;
+	padding-bottom: 20px;
+	
+}
+.ef_Head_r {
+	text-align:left;
+	background-color: #89B0D8;
+	float:left;
+	border: medium solid #336699;
+	padding: 5px;
+	margin-top:20px;
+	margin-left:30px;
+}
+
+.leftMenue {
+	float: left;
+	position: static;
+	width: 220px;
+	margin: auto;
+	border: medium solid #336699;
+	margin-top:40px;
+	
+	
+}
+
+.leftMenue_heading {
+	background-color:#89B0D8;
+	border:thin solid #336699;
+	padding-left:10px;
+	padding-top:3px;
+	padding-bottom:3px;
+}
+
+.leftMenue ul{
+	margin:0px;
+	padding-top:10px;
+	padding-left:23px;
+	padding-bottom:10px;
+	color:#336699;
+}
+.wrap {
+	margin-left: 230px;
+	padding:5px;
+}
+
+.topMenue {
+	background-color: #FFF;
+	position: static;
+	height: auto;
+	
+
+}
+
+.buttons {
+	margin-bottom:10px;
+}
+.ef_Folder{
+	padding:5px 5px 0px 5px;
+	
+	
+	
+}
+
+.eF_FolderFormList {
+	
+	height:27px;
+	margin-top:10px;
+	
+	
+}
+
+.ef_FolderFormListItem {
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:2px;
+	padding-bottom:2px;
+	float:left;
+	background-color: #89B0D8;
+	border:medium solid #336699;
+}
+
+.ef_FolderFormListItemSelected {
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:2px;
+	padding-bottom:2px;
+	float:left;
+	background-color: #89B0D8;
+	border-top:medium solid #336699;
+	border-right:medium solid #336699;
+	border-left:medium solid #336699;
+	border-bottom:medium solid #89B0D8;
+}
+
+
+.ef_FolderFormListItem a:link  {
+	text-decoration:none;
+	color:#000;
+}
+
+.ef_FolderFormListItemSelected a:link  {
+	text-decoration:none;
+	color:#000;
+}
+
+
+.ef_FormularHead {
+	background-color: #89B0D8;
+	border:medium solid #336699;
+	
+	
+	min-height:50px;
+	
+}
+.ef_Formular {
+	border-left:medium solid #336699;
+	border-bottom:medium solid #336699;
+	border-right:medium solid #336699;
+	padding:5px;
+	display:none;
+	
+}
+
+.main {
+	background-color: #FFF;
+	
+	margin-top:10px;
+	border: 3px solid #336699;
+	padding: 10px;
+}
+
+.watchlist ul{
+	list-style-type:none;
+}
+
+.Formlist ul{
+	list-style-type:none;
+}
+.Formlist li{
+	padding-top:10px;
+	
+}
+
+.leftMenue ul{
+	list-style-type:none;
+}
+
+#eF_div_Hinttext {
+	background-color:#F00; 
+	width:285px; height:155px; 
+	position:absolute;
+	top:47px;left:-100px;
+	display:none;
+	padding: 4px;
+	border:medium solid #336699;
+	background-color: #89B0D8;
+}
