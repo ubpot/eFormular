@@ -1,25 +1,26 @@
-<?
+<?php
 header('content-type: text/html; charset=utf-8');
 session_set_cookie_params(20000);
 session_start();
 require('connectDB.php');
 require_once('htmlMakros.php');
 
-if ($_GET['logout']=="true") {
+if (isset($_GET['logout']) && $_GET['logout']=="true") {
 	$sql = "UPDATE Formdata SET block_begin=null,block_id_User = null where block_id_User=".$_SESSION['userid'];
-	$result = mysql_query($sql);
-	mysql_error();
-	
+	$result = mysqli_query($db,$sql);
+	mysqli_error($db);
+
 	$_SESSION['userid']="";
 	$_SESSION['username']="";
 	session_destroy();
 }
+$LoginError="";
 
-if ($_POST['login']) {
+if (isset($_POST['login'])) {
 	$_SESSION['userid'] = "";
 	$sql = "SELECT id,passwd,name,page,shortname,role FROM User WHERE login='".$_POST['login']."'";
-	$result = mysql_query($sql);
-	$row = mysql_fetch_assoc($result);
+	$result = mysqli_query($db,$sql);
+	$row = mysqli_fetch_assoc($result);
 	if ($row) {
 		if ($_POST['passwd']==$row['passwd']) {
 			$_SESSION['userid']=$row['id'];
@@ -35,39 +36,39 @@ if ($_POST['login']) {
 	}
 }
 
-if ($_GET['loadFolderId']) {
+if (isset($_GET['loadFolderId']) && $_GET['loadFolderId'] != "") {
 	$sql = "SELECT id,id_Form from Formdata where nextVersion is null AND id_Folder=".$_GET['loadFolderId'];
-	$result = mysql_query($sql);
-	$row= mysql_fetch_assoc($result) ;
-	if (mysql_affected_rows()>0) {
+	$result = mysqli_query($db,$sql);
+	$row= mysqli_fetch_assoc($result) ;
+	if (mysqli_affected_rows($db)>0) {
 		$loadFormId = $row['id_Form'];
 		$loadFormDataId = $row['id'];
 	}
 }
-if ($_GET['loadFormId']) $loadFormId = $loadFormId;
+if (isset($_GET['loadFormId'])) $loadFormId = $_GET['loadFormId'];
 $countDivWatchlist = 0;
 
-if ($_GET['loadFormDataId']) {
-	$loadFormDataId = $loadFormDataId;
-	
-	if ($_GET['watchlistlink']==1) {
+if (isset($_GET['loadFormDataId'])) {
+	$loadFormDataId = $_GET['loadFormDataId'];
+
+	if (isset ($_GET['watchlistlink']) && $_GET['watchlistlink']==1) {
 		$sql = "Select id,nextVersion,id_Form from Formdata where id=".$loadFormDataId;
-		$result = mysql_query($sql);
-		$row= mysql_fetch_assoc($result) ;
+		$result = mysqli_query($db,$sql);
+		$row= mysqli_fetch_assoc($result) ;
 		while ($row['nextVersion']!= "") {
 			$loadFormDataId = $row['nextVersion'];
 			$sql = "Select id,nextVersion,id_Form from Formdata where id=".$loadFormDataId;
-			$result = mysql_query($sql);
-			$row= mysql_fetch_assoc($result) ;
+			$result = mysqli_query($db,$sql);
+			$row= mysqli_fetch_assoc($result) ;
 			$countDivWatchlist++;
 		}
 	}
 }
 
-if ($loadFormId) {
+if (isset($loadFormId)) {
 	$sql = "SELECT id, html from Formular where id=".$loadFormId;
-	$result = mysql_query($sql);
-	$FORMULARTMPL= mysql_fetch_assoc($result) ;
+	$result = mysqli_query($db,$sql);
+	$FORMULARTMPL= mysqli_fetch_assoc($result) ;
 }
 
 ?>
@@ -76,11 +77,11 @@ if ($loadFormId) {
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
 <title>eFormular - UB Potsdam</title>
-<? if ($_GET['print']) { ?>
+<?php if (isset($_GET['print'])) { ?>
 	<link href="print.css" rel="stylesheet" type="text/css" />
-<? } else { ?>
+<?php } else { ?>
 	<link href="main.2.css" rel="stylesheet" type="text/css" />
-<? } ?>
+<?php } ?>
 <script type="text/javascript" src="JSON-parser/json.js"> </script>
 <script language="javascript" src="main.2.js" /> </script>
 <script language="javascript" src="workflow.js" /> </script>
@@ -98,16 +99,16 @@ if ($loadFormId) {
 
 </head>
 
-<body onload="onload_Form(<? if ($loadFormId) echo $loadFormId; else echo "''"; ?>,<? if ($loadFormDataId) echo $loadFormDataId;  else echo "''"; ?> ,  
-													 <? echo $countDivWatchlist ?>,<? if ($loadFolderId) echo $loadFolderId; else echo "''"; ?>);print_Watchlist();">
+<body onload="onload_Form(<?php if (isset($loadFormId)) echo $loadFormId; else echo "''"; ?>,<?php if (isset($loadFormDataId)) echo $loadFormDataId;  else echo "''"; ?> ,
+													 <?php echo $countDivWatchlist ?>,<?php if (isset($loadFolderId)) echo $loadFolderId; else echo "''"; ?>);print_Watchlist();">
 
-<?
-if (! $_SESSION['userid']) {
+<?php
+if (! isset($_SESSION['userid'])) {
 ?>
 	<div class="login">
     	<img src="img/Logo_eForm.png" />
-        <p style="color:#F00"> <? echo $LoginError; ?> </p>
-    	<form method="post" action="<? $_SERVER['PHP_SELF'] ?>">
+        <p style="color:#F00"> <?php echo $LoginError; ?> </p>
+    	<form method="post" action="<?php $_SERVER['PHP_SELF'] ?>">
             <table>
                 <tr> <td> Login:    </td> <td> <input name="login"  /> </td> </tr>
                 <tr> <td> Password: </td> <td> <input  type="password" name="passwd" /> </td> </tr>
@@ -115,20 +116,20 @@ if (! $_SESSION['userid']) {
             <input type="submit" value="Login" />
         </form>
     </div>
-<?
+<?php
 } else {
 ?>
 	<div class="eF_Head">
 
     	<div class="ef_Head_r">
         <b> Login: </b>
-        <? echo $_SESSION['username'];?> <br  />
+        <?php echo $_SESSION['username'];?> <br  />
         <script language="javascript">
-			var USER = "<? echo $_SESSION['username'];?>";
-			var USER_ID = "<? echo $_SESSION['userid'];?>";
-			var SHORTNAME = "<? echo $_SESSION['shortname'];?>";
+			var USER = "<?php echo $_SESSION['username'];?>";
+			var USER_ID = "<?php echo $_SESSION['userid'];?>";
+			var SHORTNAME = "<?php echo $_SESSION['shortname'];?>";
 		</script>
-        <a href="<? $_SERVER['PHP_SELF'] ?>?logout=true"> Abmelden </a> <br /> <br />
+        <a href="<?php $_SERVER['PHP_SELF'] ?>?logout=true"> Abmelden </a> <br /> <br />
         <a href="admin.2.php"> Adminbereich </a>
         </div>
         <img  src="img/Logo_eForm.png" />
@@ -139,8 +140,8 @@ if (! $_SESSION['userid']) {
 <div class="leftMenue">
         <div style="padding-left:10px;padding-top:10px">
 		<form action="" onSubmit="onclick_search(); return false;">
-            	<input style="width:200px" id="searchString"/> 
-                <br /> 
+            	<input style="width:200px" id="searchString"/>
+                <br />
                 <input style="margin-left:140px" type="button" onclick="onclick_search()" value="Suche" />
 		</form>
             <ul class="Menulist">
@@ -165,15 +166,15 @@ if (! $_SESSION['userid']) {
     	<div class="topMenue">
         	<div class="buttons">
 	        	<input type="button" onClick="onClick_popup_newForm();" value="Neues Formular">
-                <button id="ef_button_saveFormData2" onClick="saveFormData(MyEFolderId);" <? if (! $loadFormId) echo 'disabled="disabled"';?> > Formular speichern </button>
+                <button id="ef_button_saveFormData2" onClick="saveFormData(MyEFolderId);" <?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> > Formular speichern </button>
 		       <input id="ef_button_saveFormData" type="button" onClick="onClick_popup_saveFormData();" value="Formular speichern unter..."
-			   							<? if (! $loadFormId) echo 'disabled="disabled"';?> >
-                <button id="ef_button_addToWatchlist" onClick="onClick_addToWatchlist();" <? if (! $loadFormId) echo 'disabled="disabled"';?> > Formular in die Merkliste </button>
-                
-                <button id="ef_button_delFormData" onClick="onClick_delFormData();" <? if (! $loadFormId) echo 'disabled="disabled"';?> > Formular l&ouml;schen </button>
-                <button id="ef_button_delFolder" onClick="onClick_delFolder();" <? if (! $loadFormId) echo 'disabled="disabled"';?> > Ordner l&ouml;schen </button>
-                <button id="ef_button_Print" onClick="window.open('?loadFormId=<? echo $loadFormId; ?>&loadFormDataId=<? echo $loadFormDataId; ?>&print=true','_new')" 
-						<? if (! $loadFormId) echo 'disabled="disabled"';?> > Drucken </button>
+			   							<?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> >
+                <button id="ef_button_addToWatchlist" onClick="onClick_addToWatchlist();" <?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> > Formular in die Merkliste </button>
+
+                <button id="ef_button_delFormData" onClick="onClick_delFormData();" <?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> > Formular l&ouml;schen </button>
+                <button id="ef_button_delFolder" onClick="onClick_delFolder();" <?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> > Ordner l&ouml;schen </button>
+                <button id="ef_button_Print" onClick="window.open('?loadFormId=<?php if (isset($loadFormId)) echo $loadFormId; ?>&loadFormDataId=<?php if (isset($loadDataFormId)) echo $loadFormDataId; ?>&print=true','_new')"
+						<?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> > Drucken </button>
 
 
 
@@ -185,12 +186,12 @@ if (! $_SESSION['userid']) {
             </div>
             <div id="ef_FormularHead" class="ef_FormularHead">
             <script language="javascript">
-<?		   	if ($loadFormId || $loadFolderId) {	?>
+<?php		   	if (isset($loadFormId) || isset($loadFolderId)) {	?>
       				document.getElementById("ef_FormularHead").style.display="block";
-<?		   	} else { 				?>
+<?php		   	} else { 				?>
 				document.getElementById("ef_FormularHead").style.display="none";
 
-<?		   	} 	 				?>
+<?php		   	} 	 				?>
 
             </script>
 
@@ -207,16 +208,16 @@ if (! $_SESSION['userid']) {
                 </div>
                 <div style="float:right;position:relative">
                     <table>
-                        
+
                         <tr>
                             <td> <b> Ablage:</b> </td>
                             <td>
                             	<select id='eF_Tray'>
                                 	<option  value="" selected="selected"> ------- </option>
-<?
+<?php
 									$sql = "SELECT id,name FROM Tray ";
-									$result = mysql_query($sql);
-									while ($row = mysql_fetch_assoc($result)) {
+									$result = mysqli_query($db,$sql);
+									while ($row = mysqli_fetch_assoc($result)) {
 										echo "<option value='".$row['id']."'> ".$row['name']." </option>\n";
 									};
 ?>
@@ -226,8 +227,8 @@ if (! $_SESSION['userid']) {
                         <tr style="text-align:right">
                         	<td> </td>
                         	<td onclick="document.getElementById('eF_div_Hinttext').style.display='block';"> Bemerkungen  <br /> &nbsp;
-                            
-                           
+
+
                             </td>
                         </tr>
 
@@ -244,7 +245,7 @@ if (! $_SESSION['userid']) {
                         <b> Status: </b>
                         <select id='eF_Status'>
                             <option value="unerledigt" selected='selected'> unerledigt </option> <option value="erledigt"> erledigt </option>
-                        </select> 
+                        </select>
                     </div>
                     <b> Version:  </b> <br />
                     <a id="eF_prevVersion" href="javascript:void(0);"> 	&larr;  </a> &nbsp;
@@ -253,9 +254,9 @@ if (! $_SESSION['userid']) {
                 </div>
             </div>
         </div>
-        <div id="ef_Formular" class="ef_Formular"  <? if ($loadFormId || $loadFolderId) echo ('style="display:block"') ?> >
-<?
-		if ($loadFormId) {
+        <div id="ef_Formular" class="ef_Formular"  <?php if (isset($loadFormId) || isset($loadFolderId)) echo ('style="display:block"') ?> >
+<?php
+		if (isset($loadFormId)) {
 			echo  replaceMakros($FORMULARTMPL['html']);
 
 		}
@@ -267,24 +268,24 @@ if (! $_SESSION['userid']) {
         	<h2> Suchergebnisse: </h2>
             <div style=" margin-left:100px;text-align:center; margin-bottom:5px; border:solid thin black; width:670px; padding:5px; ">
             	<table>
-                	<tr> 
+                	<tr>
                     	<td> <b> Auswahl:</b> </td>
                     	<td>
-                            <input id="ef_radio_search_onlyoutstanding_1" type="radio" name="ef_radio_search_onlyoutstanding" 
+                            <input id="ef_radio_search_onlyoutstanding_1" type="radio" name="ef_radio_search_onlyoutstanding"
                                     value="1" checked="checked"  onchange="onchange_searchparam()"/> Unerledigte Formulare
-                            <input id="ef_radio_search_onlyoutstanding_2" type="radio" name="ef_radio_search_onlyoutstanding" 
+                            <input id="ef_radio_search_onlyoutstanding_2" type="radio" name="ef_radio_search_onlyoutstanding"
                                     value="0"  onchange="onchange_searchparam()"/> Alle Formulare
 						</td>
-        		
+
                 	</tr>
                     <tr>
 		            	<td> <b> Sortierung:  </b> </td>
                 		<td>
-                            <input id="ef_radio_search_sort_1" type="radio" name="ef_radio_search_sort" 
+                            <input id="ef_radio_search_sort_1" type="radio" name="ef_radio_search_sort"
                                     value="1" checked="checked"  onchange="onchange_searchparam()"/> nach Titel
-                            <input id="ef_radio_search_sort_2" type="radio" name="ef_radio_search_sort" 
+                            <input id="ef_radio_search_sort_2" type="radio" name="ef_radio_search_sort"
                                     value="0"  onchange="onchange_searchparam()"/> nach Datum absteigend
-                            <input id="ef_radio_search_sort_3" type="radio" name="ef_radio_search_sort" 
+                            <input id="ef_radio_search_sort_3" type="radio" name="ef_radio_search_sort"
                                     value="2"  onchange="onchange_searchparam()"/> nach Datum aufsteigend
                         </td>
                     </tr>
@@ -294,9 +295,9 @@ if (! $_SESSION['userid']) {
             </div>
         </div>
 
-        <div id="main" class="main" <? if ($loadFormId || $loadFolderId) echo ('style="display:none"') ?>>
-<?
-			if ($User_Page != "") {
+        <div id="main" class="main" <?php if (isset($loadFormId) || isset($loadFolderId)) echo ('style="display:none"') ?>>
+<?php
+			if (isset($User_Page) != "") {
 				echo $User_Page;
 			} else {
 ?>
@@ -319,7 +320,7 @@ if (! $_SESSION['userid']) {
                         <li> Beispiel 3  - Erkl&auml;rung </li>
               </ul>
           </p>
-<?
+<?php
 		}
 ?>
 
@@ -343,10 +344,10 @@ if (! $_SESSION['userid']) {
     <div id="ef_popup_Trays"  class="ef_popup">
         <h2> Ablagen: </h2>
         <div  id="ef_popup_Trays_TrayList" class="ef_popup_Select"><select size=2>
-<?
+<?php
                 $sql = "SELECT id,name FROM Tray ORDER BY name ";
-                    $result = mysql_query($sql);
-                    while ($row = mysql_fetch_assoc($result)) {
+                    $result = mysqli_query($db,$sql);
+                    while ($row = mysqli_fetch_assoc($result)) {
                         echo "<option value='".$row['id']."'> ".$row['name']." </option>\n";
                 };
 ?>
@@ -361,7 +362,7 @@ if (! $_SESSION['userid']) {
 	<div id="ef_popup_Folders"  class="ef_popup">
         <h2> Ordner: </h2>
         <div  id="ef_popup_Folders_FolderList" class="ef_popup_Select">
-        	
+
         </div>
         <div style=" width:100%;text-align:center; margin-bottom:5px;">
         <input type="radio" name="ef_radio_onlyoutstanding2" value="1" checked="checked"  onchange="onchange_onlyoutstanding(this)"/> Unerledigte und leere Ordner
@@ -382,7 +383,7 @@ if (! $_SESSION['userid']) {
         <input type="radio" name="ef_radio_onlyoutstanding" value="1" checked="checked"  onchange="onchange_onlyoutstanding(this)"/> Unerledigte und leere Ordner
         <input type="radio" name="ef_radio_onlyoutstanding" value="0"  onchange="onchange_onlyoutstanding(this)"/> Alle Ordner
         </div>
-        
+
         <button onclick="onClick_newFolder();"> neuer Ordner</button>
         <button style="margin-right:1px;" onclick="onClick_renameFolder();"> Ordner umbenennen </button>
 
@@ -390,9 +391,9 @@ if (! $_SESSION['userid']) {
         <button onclick="document.getElementById('ef_popup_saveFormData').style.visibility='hidden';"> Abbrechen </button>
 
 
-    </div> 
+    </div>
 
-<?
+<?php
 }
 ?>
 </body>

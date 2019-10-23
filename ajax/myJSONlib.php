@@ -1,4 +1,4 @@
-<?
+<?php
 function getRecord($row) {
 	if ($row == "") {
 		return ("{}");
@@ -29,7 +29,7 @@ function row2Json($row) {
 
 function result2Json ($result) {
 	$string = "[";
-	while ($row = mysql_fetch_assoc($result)) {
+	while ($row = mysqli_fetch_assoc($result)) {
 		$string .= row2Json($row).",";
 	}
 	if ($string != "[" ) $string = substr($string, 0, -1);				// Letztes komma löschen

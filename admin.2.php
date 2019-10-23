@@ -1,4 +1,4 @@
-<?
+<?php
 header('content-type: text/html; charset=utf-8');
 session_set_cookie_params(20000);
 
@@ -17,17 +17,19 @@ include($Moduledir."admin.Blocklist.php");
 include($Moduledir."admin.Mail.php");
 
 
-if ($_GET['logout']=="true") {
+if (isset($_GET['logout']) && $_GET['logout']=="true") {
 	$_SESSION['userid']="";
 	$_SESSION['username']="";
 	session_destroy();
 }
 
-if ($_POST['login']) {
+$LoginError='';
+
+if (isset($_POST['login'])) {
 	$_SESSION['userid'] = "";
 	$sql = "SELECT id,passwd,name,role FROM User WHERE login='".$_POST['login']."'";
-	$result = mysql_query($sql);
-	$row = mysql_fetch_assoc($result);
+	$result = mysqli_query($db,$sql);
+	$row = mysqli_fetch_assoc($result);
 	if ($row) {
 		if ($_POST['passwd']==$row['passwd']) {
 			$_SESSION['userid']=$row['id'];
@@ -47,39 +49,39 @@ if ($_POST['login']) {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>eFormular - UB Potsdam</title>
     <script src="JSON-parser/json.js" type="text/javascript"> </script>
-    
+
     <script src="codemirror/js/codemirror.js" type="text/javascript"></script>
     <script src="jquery-1.7.1.js" type="text/javascript"> </script>
-    
+
     <link href="main.2.css" rel="stylesheet" type="text/css" />-
-    
+
     <script type="text/javascript" src="admin.js"> </script>
 <?php
 	for ($i=0; $i < count ($MODULS); $i++) {
-?>		 
-		<script type="text/javascript" src="<?php echo $Moduledir.$MODULS[$i][javascript]; ?>"> </script> 
-<?php 
+?>
+		<script type="text/javascript" src="<?php echo $Moduledir.$MODULS[$i]['javascript']; ?>"> </script>
+<?php
 	}
-			
-?>   
+
+?>
 
 	<script language="javascript">
-        var USER = "<? echo $_SESSION['username'];?>"; 
-    </script> 
+        var USER = "<?php echo $_SESSION['username'];?>";
+    </script>
 
 
 
 </head>
 
 <body>
-<? 
-if (! $_SESSION['userid']) {
+<?php
+if (! isset($_SESSION['userid'])) {
 ?>
 	<div class="login">
     	<img src="img/Logo_eForm.png" />
          <h1> Adminbereich </h1>
-        <p style="color:#F00"> <? echo $LoginError; ?> </p>
-    	<form method="post" action="<? $_SERVER['PHP_SELF'] ?>">
+        <p style="color:#F00"> <?php echo $LoginError; ?> </p>
+    	<form method="post" action="<?php $_SERVER['PHP_SELF'] ?>">
             <table>
                 <tr> <td> Login:    </td> <td> <input name="login"  /> </td> </tr>
                 <tr> <td> Password: </td> <td> <input  type="password" name="passwd" /> </td> </tr>
@@ -87,68 +89,68 @@ if (! $_SESSION['userid']) {
             <input type="submit" value="Login" />
         </form>
     </div>
-<?
+<?php
 } else if ($_SESSION['role'] == "") {
 ?>
 	<div class="eF_Head">
     	<img  src="img/Logo_eForm.png" />
         <div class="ef_Head_r">
-        <b> Login: </b> 
-        <? echo $_SESSION['username'];?> <br  />
-        <a href="<? $_SERVER['PHP_SELF'] ?>?logout=true"> Abmelden </a> <br /> <br />
-        <a href="index.2.php"> Formularverwaltung </a> 
+        <b> Login: </b>
+        <?php echo	 $_SESSION['username'];?> <br  />
+        <a href="<?php $_SERVER['PHP_SELF'] ?>?logout=true"> Abmelden </a> <br /> <br />
+        <a href="index.2.php"> Formularverwaltung </a>
         </div>
         <h1> Adminbereich </h1>
     </div>
      <h1 style="color:#F00"> Nur Administratoren dürfen die Funktionen des Adminbereichs nutzen.  </h1>
-<?
+<?php
 } else {
 ?>
 	<div class="eF_Head">
     	<img  src="img/Logo_eForm.png" />
         <div class="ef_Head_r">
-        <b> Login: </b> 
-        <? echo $_SESSION['username'];?> <br  />
-        <a href="<? $_SERVER['PHP_SELF'] ?>?logout=true"> Abmelden </a> <br /> <br />
-        <a href="index.2.php"> Formularverwaltung </a> 
+        <b> Login: </b>
+        <?php echo $_SESSION['username'];?> <br  />
+        <a href="<?php $_SERVER['PHP_SELF'] ?>?logout=true"> Abmelden </a> <br /> <br />
+        <a href="index.2.php"> Formularverwaltung </a>
         </div>
         <h1> Adminbereich </h1>
     </div>
-   
+
 	<div class="leftMenue">
-    
+
 <?php
 			for ($i=0; $i < count ($MODULS); $i++) {
-				eval ($MODULS[$i][leftmenue].";");
+				eval ($MODULS[$i]['leftmenue'].";");
 			}
-			
-?>       
+
+?>
 	</div>
 
     <div class="wrap">
-    	<div > 
+    	<div >
 <?php
 			for ($i=0; $i < count ($MODULS); $i++) {
-				eval ($MODULS[$i][topmenue].";");
+				eval ($MODULS[$i]['topmenue'].";");
 			}
-			
+
 ?>
         </div>
-        
+
 <?php
 			for ($i=0; $i < count ($MODULS); $i++) {
-				eval ($MODULS[$i][content].";");
+				eval ($MODULS[$i]['content'].";");
 			}
 			//$MODULSinclude("admin.FormTmpl.php");
-?>      
-        
+?>
+
     </div>
- 
+
     <div id="popup" class="popup">
     </div>
-<?
-} 
-?>    
-		
+<?php
+}
+?>
+
 </body>
 </html>

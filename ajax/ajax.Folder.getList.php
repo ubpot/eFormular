@@ -1,14 +1,12 @@
-<?
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" ); 
-header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" ); 
-header("Cache-Control: no-cache, must-revalidate" ); 
-header("Pragma: no-cache" );
-header("Content-Type: text/xml; charset=UTF-8");
-
+<?php
 require('../connectDB.php');
-require('myJSONlib.php'); 
+require('myJSONlib.php');
 
-if ($_GET['onlyoutstanding']) {
+require('ajax.lib.php');
+
+sendAjaxHeader();
+
+if (isset ($_GET['onlyoutstanding'])) {
 	// UNION aus Perfomancegründen
 	$sql = "   (Select Folder.id as folderid, Folder.title as title"
 			." 		from Folder JOIN Formdata ON (Folder.id = Formdata.id_Folder) "
@@ -25,14 +23,14 @@ if ($_GET['onlyoutstanding']) {
 
 
 //echo $sql;
-$result = mysql_query($sql);
+$result = mysqli_query($db,$sql);
 
 $json=result2Json($result);
 
 //print_r ($row);
 
 echo $json;
-echo mysql_error();
+echo mysqli_error($db);
 
 
 ?>

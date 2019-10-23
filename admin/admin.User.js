@@ -5,12 +5,12 @@ function response_saveUser() {
 	if (http_request_saveForm.readyState == 4) {
    		if (http_request_saveForm.status == 200) {
 			if (! isNaN(http_request_saveForm.responseText)) {
-				
+
 				userId = parseInt(http_request_saveForm.responseText);
-				
+
 				alert ("Userdaten wurden gespeichert");
 				onClick_adm_loadUser (userId);
-				
+
 				adm_getUserList ();
 			} else {
 				alert (http_request_saveForm.responseText);
@@ -29,18 +29,18 @@ function saveUser() {
 	Login = document.getElementById('ef_Userlogin').value;
 	Passwd = document.getElementById('ef_Passwd').value;
 	Page = editorpage.getCode();
-	
+
 	var params = 'userid=' + MyUserId + '&name=' + Name  + '&login=' +  Login   + '&shortname=' + Shortname + '&passwd=' + Passwd  + '&editor='+ USER + '&page=' + encodeURIComponent(Page);
-	
+
 	http_request_saveForm = handle_request ();
 	http_request_saveForm.open('POST', 'ajax/ajax.User.save.php', true);
-	
+
 	http_request_saveForm.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http_request_saveForm.setRequestHeader("Content-length", params.length);
 	http_request_saveForm.setRequestHeader("Connection", "close");
-	
+
 	http_request_saveForm.onreadystatechange = response_saveUser;
-   	
+
 	http_request_saveForm.send(params);
 }
 
@@ -49,9 +49,9 @@ function response_getUser() {
 	if (http_request_Form.readyState == 4) {
    		if (http_request_Form.status == 200) {
 			//alert(http_request_Form.responseText);
-			responseText = http_request_Form.responseText.replace(/\n/g,"\\n");
-			var UserData=eval ('(' + responseText +')');
-			//var UserData = http_request_Form.responseText.parseJSON();
+			responseText = http_request_Form.responseText;
+			var UserData= JSON.parse(responseText);
+
 			document.getElementById('ef_Username').value=UserData.name;
 			document.getElementById('ef_Userlogin').value = UserData.login;
 			document.getElementById('ef_Shortname').value = UserData.shortname;
@@ -61,7 +61,7 @@ function response_getUser() {
 
 			document.getElementById('eF_Editor_User').innerHTML = UserData.editor;
 			document.getElementById('eF_Timestamp_User').innerHTML = UserData.timestamp;
-		} 
+		}
 	}
 }
 
@@ -79,13 +79,13 @@ function response_getUserList () {
 			//FormList=http_request_Menu.responseText.parseJSON();
 			UserList=eval ('(' + http_request_Form.responseText +')');
 			HTML ="<ul>";
-			
+
 			for (var i = 0; i < UserList.length ; i++ ) {
 				HTML+='<li onclick="onClick_adm_loadUser(' + UserList[i].id  + ')">' + UserList[i].login + " </li>\n";
 			}
 			HTML+="</ul>";
 			document.getElementById('ef_Userlist').innerHTML=HTML;
-		} 
+		}
 	}
 }
 
@@ -98,7 +98,7 @@ function adm_getUserList () {
 
 function onClick_Userlist() {
 	hide_all();
-	
+
 	document.getElementById("eF_MenueUser").style.display="block";
 	document.getElementById("eF_div_User").style.display="block";
 	document.getElementById("ef_Userlist").style.display="block";

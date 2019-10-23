@@ -1,7 +1,7 @@
-<? 
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" ); 
-header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" ); 
-header("Cache-Control: no-cache, must-revalidate" ); 
+<?php
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
+header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" );
+header("Cache-Control: no-cache, must-revalidate" );
 header("Pragma: no-cache" );
 header("Content-Type: text/xml; charset=iso-8859-1");
 
@@ -28,20 +28,20 @@ $timestamp = time();
 	$sqlform = "SELECT * FROM Formular where (id = 786)";
 	$resultform = mysql_query($sqlform);
 	$rowform = mysql_fetch_array($resultform);
-	
-//inhalt formstring	
+
+//inhalt formstring
 
 	$html2 = $rowform['html'];
 	$html = real_escape_string($html2);
-	
+
 $eintrag = "INSERT INTO anfrage (Name, Mail, Institution, Publikation, DOI, Zeitschrift, Verlag, ISSN, Datum, Akzeptanz, Kosten, Drittmittel, Bemerkungen, Akzeptieren, Angehoeriger, Nachwuchs, timestamp) VALUES ('$Name','$Mail', '$Institution', '$Publikation', '$DOI', '$Zeitschrift', '$Verlag', '$ISSN', '$Datum', '$Akzeptanz', '$Kosten', '$Drittmittel', '$Bemerkungen', '$Akzeptieren', '$Angehoeriger', '$Nachwuchs', '$timestamp' )";
 //$eintrag = "INSERT INTO anfrage (Name, Mail) VALUES ('$Name','$Mail')";
 $eintragen = mysql_query($eintrag);
-	
+
 $eintrag = " INSERT INTO anfrage (Name, Bemerkungen) VALUES ('".$Name."','".$html."')";
 //$eintrag = "INSERT INTO anfrage (Name, Mail) VALUES ('$Name','$Mail')";
 $eintragen = mysql_query($eintrag);
-	
+
 echo $Name;
 
 

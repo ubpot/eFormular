@@ -1,7 +1,7 @@
-<?
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" ); 
-header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" ); 
-header("Cache-Control: no-cache, must-revalidate" ); 
+<?php
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
+header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" );
+header("Cache-Control: no-cache, must-revalidate" );
 header("Pragma: no-cache" );
 header("Content-Type: text/xml; charset=UTF-8");
 
@@ -44,7 +44,7 @@ function row2Json($row) {
 
 function result2Json ($result) {
 	$string = "[";
-	while ($row = mysql_fetch_assoc($result)) {
+	while ($row = mysqli_fetch_assoc($result)) {
 		$string .= row2Json($row).",";
 	}
 	$string = substr($string, 0, -1);				// Letztes komma löschen
@@ -60,15 +60,15 @@ function query2sql($query) {
 	$elementstring = "";
 	$elementleftjoin = "";
 	$Makros= array();
-	
+
 	$Makros['/%EF_NOW[+]1WEEK%/'] = date('Y-m-d',time()+ (7 * 24 * 60 * 60));
 	$Makros['/%EF_NOW[+]1MONTH%/'] = date('Y-m-d',time()+ (30 * 24 * 60 * 60));
 	$Makros['/%EF_NOW%/'] = date('Y-m-d');
-	
+
 	// echo $query;
 	for ($i = 0; $i < count($query_array); $i++ ) {
 		foreach ($Makros as $key => $val) {
-			
+
 			$query_array [$i] = preg_replace($key, $val,  $query_array [$i]);
 			//if ($_SERVER['REMOTE_ADDR']=="141.89.36.117") echo $key.", ".$val." - ". $query_array [$i]."\n";
 		}
@@ -92,15 +92,15 @@ function query2sql($query) {
 			$elementstring .= " Formvalues.id_Element='".$treffer[1]."' AND Formvalues.value <= '".$treffer[2]."' AND ";
 			$elementleftjoin = " LEFT JOIN Formvalues ON (Formdata.id =  Formvalues.id_Formdata) ";
 		} else  {
-			$jsonstring .= "(json like '%".$query_array [$i]."%' OR Formdata.title like '%".$query_array [$i]."%' OR Folder.title like '%".$query_array [$i]."%') AND";	
+			$jsonstring .= "(json like '%".$query_array [$i]."%' OR Formdata.title like '%".$query_array [$i]."%' OR Folder.title like '%".$query_array [$i]."%') AND";
 		}
 	}
-	//$jsonstring = substr($jsonstring, 0, -4);	
+	//$jsonstring = substr($jsonstring, 0, -4);
 
 	$sql = " Select Formdata.id as formdataid, id_Form as formid, Formdata.title as title, Formular.title as Formulartyptitle,status,Tray.name as ablage , "
 			." Folder.title as foldertitle , hinttext , date_format(Formdata.timestamp,'%Y-%m-%d') as date"
 			." from Formdata LEFT JOIN Tray ON (Formdata.id_Tray=Tray.id) LEFT JOIN Folder ON (Formdata.id_Folder=Folder.id) "
-			." 			 ".$elementleftjoin ." ,Formular  " 
+			." 			 ".$elementleftjoin ." ,Formular  "
 			." where ".$jsonstring.$elementstring." Formdata.nextVersion is NULL AND Formdata.id_Form =  Formular.id ".$where_block." ORDER BY ".$order_block ;
 	return $sql;
 }
@@ -114,28 +114,28 @@ if ($query) {
 } else if ($tray) {
 	$sql = " Select Formdata.id as formdataid, id_Form as formid, Formdata.title as title, Formular.title as Formulartyptitle,status,Tray.name as ablage ,"
 			." Folder.title as foldertitle, hinttext , date_format(Formdata.timestamp,'%Y-%m-%d') as date  "
-			." from (Formdata LEFT JOIN Tray ON (Formdata.id_Tray=Tray.id))LEFT JOIN Folder ON (Formdata.id_Folder=Folder.id)  ,Formular " 
+			." from (Formdata LEFT JOIN Tray ON (Formdata.id_Tray=Tray.id))LEFT JOIN Folder ON (Formdata.id_Folder=Folder.id)  ,Formular "
 			." where id_Tray = ".$tray." AND Formdata.nextVersion is NULL AND Formdata.id_Form =  Formular.id  ".$where_block." ORDER BY ".$order_block ;
 } else if ($sstringid) {
-	
+
 	$sql = " Select id,title,sstring from Searchstring where id=".$sstringid;
-	$result = mysql_query($sql);
-	$row = mysql_fetch_assoc($result);
+	$result = mysqli_query($db,$sql);
+	$row = mysqli_fetch_assoc($result);
 	$query = $row['sstring'];
-	
+
 	$sql= query2sql($query);
 }
 
 //if ($_SERVER['REMOTE_ADDR']=="141.89.36.117") echo $sql;
 //echo $sql;
 
-$result = mysql_query($sql);
+$result = mysqli_query($db,$sql);
 
 $json=result2Json($result);
 
 //print_r ($row);
 
 echo $json;
-echo mysql_error();
+echo mysqli_error($db);
 
 ?>

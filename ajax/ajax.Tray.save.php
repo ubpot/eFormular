@@ -1,7 +1,7 @@
-<? 
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" ); 
-header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" ); 
-header("Cache-Control: no-cache, must-revalidate" ); 
+<?php
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
+header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" );
+header("Cache-Control: no-cache, must-revalidate" );
 header("Pragma: no-cache" );
 header("Content-Type: text/xml; charset=UTF-8");
 
@@ -14,23 +14,23 @@ $editor= $_POST['editor'];
 
 if ($trayid != "") {
 	$sql = " UPDATE Tray SET name='".$name."', editor='".$editor."' where id=".$trayid;
-	mysql_query($sql);
+	mysqli_query($db,$sql);
 	$newid = $trayid;
 } else {
 	$sql = " INSERT INTO Tray (name,editor) VALUES ('".$name."','".$editor."' )";
-	mysql_query($sql);
-	$newid = mysql_insert_id();
+	mysqli_query($db,$sql);
+	$newid = mysqli_insert_id($db);
 }
 
 
 
-if (mysql_affected_rows()!=1) {
+if (mysqli_affected_rows($db)!=1) {
 	echo "Bei Speichern ist ein Fehler aufgetreten: \n";
-	echo "mysql_affected_rows()".mysql_affected_rows();
-	echo mysql_error();
+	echo "mysqli_affected_rows()".mysqli_affected_rows($db);
+	echo mysqli_error($db);
 	die();
 }
-	
+
 echo $newid;
 
 
