@@ -6,18 +6,22 @@ require('connectDB.php');
 require_once('htmlMakros.php');
 
 if (isset($_GET['logout']) && $_GET['logout']=="true") {
-	$sql = "UPDATE Formdata SET block_begin=null,block_id_User = null where block_id_User=".$_SESSION['userid'];
-	$result = mysqli_query($db,$sql);
-	mysqli_error($db);
+    if (isset($_SESSION['userid'])) {
+		$sql = "UPDATE Formdata SET block_begin=null,block_id_User = null where block_id_User=".$_SESSION['userid'];
+		$result = mysqli_query($db,$sql);
+		mysqli_error($db);
+	}
 
-	$_SESSION['userid']="";
-	$_SESSION['username']="";
+	unset($_SESSION['userid']);
+	unset($_SESSION['username']);
+	unset($_SESSION['shortname']);
+	unset($_SESSION['role']);
 	session_destroy();
 }
 $LoginError="";
 
 if (isset($_POST['login'])) {
-	$_SESSION['userid'] = "";
+	// $_SESSION['userid'] = "";
 	$sql = "SELECT id,passwd,name,page,shortname,role FROM User WHERE login='".$_POST['login']."'";
 	$result = mysqli_query($db,$sql);
 	$row = mysqli_fetch_assoc($result);
@@ -103,7 +107,7 @@ if (isset($loadFormId)) {
 													 <?php echo $countDivWatchlist ?>,<?php if (isset($loadFolderId)) echo $loadFolderId; else echo "''"; ?>);print_Watchlist();">
 
 <?php
-if (! isset($_SESSION['userid'])) {
+if (! (isset($_SESSION['userid']) ) ) {
 ?>
 	<div class="login">
     	<img src="img/Logo_eForm.png" />
