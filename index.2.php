@@ -177,7 +177,7 @@ if (! (isset($_SESSION['userid']) ) ) {
 
                 <button id="ef_button_delFormData" onClick="onClick_delFormData();" <?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> > Formular l&ouml;schen </button>
                 <button id="ef_button_delFolder" onClick="onClick_delFolder();" <?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> > Ordner l&ouml;schen </button>
-                <button id="ef_button_Print" onClick="window.open('?loadFormId=<?php if (isset($loadFormId)) echo $loadFormId; ?>&loadFormDataId=<?php if (isset($loadDataFormId)) echo $loadFormDataId; ?>&print=true','_new')"
+                <button id="ef_button_Print" onClick="window.open('?loadFormId=<?php if (isset($loadFormId)) echo $loadFormId; ?>&loadFormDataId=<?php if (isset($loadFormDataId)) echo $loadFormDataId; ?>&print=true','_new')"
 						<?php if (! isset($loadFormId)) echo 'disabled="disabled"';?> > Drucken </button>
 
 
