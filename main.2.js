@@ -135,6 +135,7 @@ function saveFormData(FolderId) {
 			Value = Value.replace(/\"/g,"\\u0022");
 			Value = Value.replace(/}/g,"\\u007d");				// Wird bei save Formdata ersetzt
 			Value = Value.replace(/&/g,"%26");					// URL encode
+      Value = Value.replace(/\r?\n/g, '<br />');
 			MyElem[i].value=Value;
 			MyElem[i].checked=FormElem[i].checked;
 			MyElem[i].tagName=FormElem[i].tagName;
@@ -347,6 +348,7 @@ function response_getFormData() {
 					Value = MyElem[i].value;
 					Value = Value.replace(/\\u0027/g,"'");
 					Value = Value.replace(/\\u0022/g,'"');
+          Value = Value.replace(/<br \/>/g, "\n");
 					FormElem[i].value=Value;
 					FormElem[i].checked=MyElem[i].checked;
 					FormElem[i].title=MyElem[i].title;
