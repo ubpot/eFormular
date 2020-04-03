@@ -9,7 +9,7 @@ require('../connectDB.php');
 
 
 if ($_POST['formid']) $formid = $_POST['formid']; else $formid="NULL";
-$html= $_POST['html'];
+$html= mysqli_real_escape_string($db, $_POST['html']);
 $title= $_POST['title'];
 if ($_POST['version'])  $version= $_POST['version']; else $version=1;
 $editor= $_POST['editor'];

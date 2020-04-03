@@ -78,7 +78,7 @@ function response_saveFormData() {
 				alert ("Formular wurde gespeichert");
 
 			} else {
-				alert (http_request_saveForm.responseText);
+				console.log(http_request_saveForm.responseText);
 			}
 		}
 	}
@@ -131,6 +131,8 @@ function saveFormData(FolderId) {
 			MyElem[i].id=FormElem[i].id;
 			Value = FormElem[i].value;
 			// Sonderzeichen die Probleme machen
+      Value = Value.replace(/\\/g,String.fromCharCode(92,92));
+      //Value = Value.replace(/\\/g, "\\"); // einfachen Backslash durch doppelte ersetzen
 			Value = Value.replace(/\'/g,"\\u0027"); 			// Wird bei get Formdata wieder ersetzt
 			Value = Value.replace(/\"/g,"\\u0022");
 			Value = Value.replace(/}/g,"\\u007d");				// Wird bei save Formdata ersetzt
@@ -349,6 +351,10 @@ function response_getFormData() {
 					Value = Value.replace(/\\u0027/g,"'");
 					Value = Value.replace(/\\u0022/g,'"');
           Value = Value.replace(/<br \/>/g, "\n");
+          if(true){
+              Value = Value.replace(/\\\\/g,String.fromCharCode(92,92));
+
+          }
 					FormElem[i].value=Value;
 					FormElem[i].checked=MyElem[i].checked;
 					FormElem[i].title=MyElem[i].title;
