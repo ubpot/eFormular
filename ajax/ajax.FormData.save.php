@@ -58,28 +58,52 @@ $status = $_POST['status'];
 
 		preg_match ('/\\\"id\\\":\\\"(.*)\\\"/U',$Matches[$i][0],$Matches_id);
 
-		//print_r($Matches_id);
-		if (! isset ($Matches_id[1])) continue;
-		$id_Element = $Matches_id[1];
+		if ( isset ($Matches_id[1])) {
+			$id_Element = $Matches_id[1];
 
-		preg_match ('/\\\"value\\\":\\\"(.*)\\\"/U',$Matches[$i][0],$Matches_value);
-		$Value_Element = str_replace("\\\\\\\\u007d","}",$Matches_value[1]);
-		//print_r($Matches_value);
+			preg_match ('/\\\"value\\\":\\\"(.*)\\\"/U',$Matches[$i][0],$Matches_value);
+			$Value_Element = str_replace("\\\\\\\\u007d","}",$Matches_value[1]);
+			//print_r($Matches_value);
 
 
-		if (trim($Value_Element)=="") continue;
+			if (trim($Value_Element)=="") continue;
 
-		$sql = " INSERT INTO Formvalues (id_Element,id_Formdata,value) "
-		." VALUES ('".$id_Element."' , ".$newid.",'".$Value_Element."')";
-		//echo $sql;
-		mysqli_query($db,$sql);
+			$sql = " INSERT INTO Formvalues (id_Element,id_Formdata,value) "
+			." VALUES ('".$id_Element."' , ".$newid.",'".$Value_Element."')";
+			mysqli_query($db,$sql);
 
-		if (mysqli_affected_rows($db)!=1 )  {
-			echo "Bei aktualisieren der Indextabelle ist ein Fehler aufgetreten: \n";
-			echo "mysqli_affected_rows()".mysqli_affected_rows($db);
+			if (mysqli_affected_rows($db)!=1 )  {
+				echo "Bei aktualisieren der Indextabelle ist ein Fehler aufgetreten: \n";
+				echo "mysqli_affected_rows()".mysqli_affected_rows($db);
 
-			echo mysqli_error($db);
-			echo "\n".$sql."\n";
+				echo mysqli_error($db);
+				echo "\n".$sql."\n";
+			}
+		} else{
+			preg_match ('/\"id\":\"(.*)\"/U',$Matches[$i][0],$Matches_id);
+			//print_r($Matches_id);
+			if (!isset ($Matches_id[1]) || $Matches_id[1] == "" || $Matches_id[1] == " ") {continue;}
+			$id_Element = $Matches_id[1];
+
+
+			preg_match ('/\"value\":\"(.*)\"/U',$Matches[$i][0],$Matches_value);
+			$Value_Element = str_replace("\\\\\\\\u007d","}",$Matches_value[1]);
+			//print_r($Matches_value);
+
+
+			if (trim($Value_Element)=="") continue;
+
+			$sql = " INSERT INTO Formvalues (id_Element,id_Formdata,value) "
+			." VALUES ('".$id_Element."' , ".$newid.",'".$Value_Element."')";
+			mysqli_query($db,$sql);
+
+			if (mysqli_affected_rows($db)!=1 )  {
+				echo "Bei aktualisieren der Indextabelle ist ein Fehler aufgetreten: \n";
+				echo "mysqli_affected_rows()".mysqli_affected_rows($db);
+
+				echo mysqli_error($db);
+				echo "\n".$sql."\n";
+			}
 		}
 
 	}
