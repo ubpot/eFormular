@@ -81,6 +81,8 @@ function response_saveFormData() {
 				console.log(http_request_saveForm.responseText);
 			}
 		}
+else{
+	alert("error");}
 	}
 }
 
@@ -131,13 +133,25 @@ function saveFormData(FolderId) {
 			MyElem[i].id=FormElem[i].id;
 			Value = FormElem[i].value;
 			// Sonderzeichen die Probleme machen
-      Value = Value.replace(/\\/g,String.fromCharCode(92,92));
+			Value = Value.replace(/%22/g, '"'); // URL Encoding
+			Value = Value.replace(/%3A/g, ':'); // URL Encoding
+			Value = Value.replace(/%7B/g, "{"); // URL Encoding
+			Value = Value.replace(/%7D/g, "}"); // URL Encoding
+			Value = Value.replace(/%5D/g, "]"); // URL Encoding
+			Value = Value.replace(/%5B/g, "["); // URL Encoding
+			Value = Value.replace(/%2C/g, ","); // URL Encoding
+
+
+	//   Value = Value.replace(/\\/g,String.fromCharCode(92,92));
+	  		Value = Value.replace(/\\/g,'\\\\');
       //Value = Value.replace(/\\/g, "\\"); // einfachen Backslash durch doppelte ersetzen
 			Value = Value.replace(/\'/g,"\\u0027"); 			// Wird bei get Formdata wieder ersetzt
 			Value = Value.replace(/\"/g,"\\u0022");
 			Value = Value.replace(/}/g,"\\u007d");				// Wird bei save Formdata ersetzt
 			Value = Value.replace(/&/g,"%26");					// URL encode
-      Value = Value.replace(/\r?\n/g, '<br />');
+			Value = Value.replace(/\r?\n/g, '<br />');
+			Value = Value.replace(/\t/g, '\\t');
+			
 			MyElem[i].value=Value;
 			MyElem[i].checked=FormElem[i].checked;
 			MyElem[i].tagName=FormElem[i].tagName;
@@ -154,11 +168,11 @@ function saveFormData(FolderId) {
 	http_request_saveForm.open('POST', 'ajax/ajax.FormData.save.php', true);
 
 	http_request_saveForm.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	http_request_saveForm.setRequestHeader("Content-length", params.length);
-	http_request_saveForm.setRequestHeader("Connection", "close");
+	// http_request_saveForm.setRequestHeader("Content-length", params.length);
+	//http_request_saveForm.setRequestHeader("Connection", "close");
 
 	http_request_saveForm.onreadystatechange = response_saveFormData;
-
+	//console.log(params);
 	http_request_saveForm.send(params);
 
 }
@@ -307,7 +321,7 @@ function response_getFormData() {
 			FormElem = Formular.elements;
 			//Formular = document.getElementById('ef_Formular').firstChild;
 			//response = eval("(" + http_request.responseText + ")");
-			responseText = http_request_Form.responseText.trim().replace(/\n/g,"\\n");
+			responseText = http_request_Form.responseText.trim().replace(/\n/g,"\\n").replace(/\t/g, "\\t");
 			var FormData = responseText.parseJSON();
 			var MyElem = FormData.json.parseJSON();
 
@@ -620,7 +634,7 @@ function onClick_addToWatchlist(){
 function response_listFormData() {
 	if (http_request_Menu.readyState == 4) {
    		if (http_request_Menu.status == 200) {
-			if (http_request_Menu.responseText == "]") {
+			if (http_request_Menu.responseText == "\n]") {
 				HTML = "Keine Treffer gefunden.";
 			} else {
 				closeForm();

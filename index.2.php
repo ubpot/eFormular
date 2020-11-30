@@ -1,4 +1,5 @@
 <?php
+
 header('content-type: text/html; charset=utf-8');
 session_set_cookie_params(20000);
 session_start();
